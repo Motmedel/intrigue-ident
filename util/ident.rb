@@ -118,37 +118,6 @@ def main
   end
 end
 
-# Write the file (helper method)
-def write_simple_csv(filename, output_q)
-  headings = []
-  headings << 'URL'
-  headings << 'Fingerprint'
-  headings << 'Match Details'
-  File.open(filename, 'w') { |f| f.print headings.join(', ') }
-
-  while output_q.size > 0
-
-    # get a result
-    o = output_q.pop
-
-    # get our url, fingerprint and tags
-    out = ''
-    o['fingerprint'].uniq.map do |f|
-      out << "#{o['url']}, "
-      out << "#{f['vendor']} #{f['product']} #{f['version']} #{f['update']}".strip << ', '
-      out << "#{f['description']} "
-      out << "\n"
-    end
-
-    # print it out!
-    File.open(filename, 'a') { |f| f.print out }
-  end
-
-  print
-  print '============================'
-  print "Find results in: #{filename}"
-  print '============================'
-end
 
 def check_uris_from_file(opts)
   filepath = opts[:file]
@@ -167,7 +136,7 @@ def check_uris_from_file(opts)
   workers = (0...num_threads).map do
     Thread.new do
       begin
-        while x = work_q.pop(true)
+        while (x = work_q.pop(true))
           thread_name = "thread-#{rand(9_999_999)}"
           print_debug "#{thread_name} checking: #{x}"
 
@@ -209,8 +178,7 @@ def check_uris_from_file(opts)
   end; 'ok' # workers
   workers.map(&:join); 'ok'
 
-  # Write the file
-  write_simple_csv(output_q)
+  puts JSON.pretty_generate(Array.new(queue.size) { queue.pop })
 end
 
 def check_single_uri(opts)
