@@ -118,7 +118,6 @@ def main
   end
 end
 
-
 def check_uris_from_file(opts)
   filepath = opts[:file]
 
@@ -149,20 +148,25 @@ def check_uris_from_file(opts)
           # get the fingerprint component, uniq it
           if check_result['fingerprint']
             out['fingerprint'] = []
-            check_result['fingerprint'].each do |x|
+            check_result['fingerprint'].each do |y|
               # Make sure not to include dupes, unless we're debugging
-              next if !debug && out['fingerprint'].include?(x)
+              next if out['fingerprint'].include?(y)
 
-              out['fingerprint'] << x
+              out['fingerprint'] << y
             end
           end
 
           # get all the content check values as hash entries
           if check_result['content']
             out['content'] = {}
-            check_result['content'].each do |x|
-              out['content'][(x['name']).to_s] = x['result']
+            check_result['content'].each do |y|
+              out['content'][(y['name']).to_s] = y['result']
             end
+          end
+
+          out['responses'] = []
+          if check_result['responses']
+            out['responses'] = check_result['responses']
           end
 
           print_debug "#{thread_name} #{x} gave result: #{out}"
@@ -171,14 +175,14 @@ def check_uris_from_file(opts)
         end
       rescue StandardError => e
         print_debug "Caught Exception! #{e}"
-      rescue ThreadError
+      rescue ThreadError => e
         print_debug "Caught Exception! #{e}"
       end
     end
   end; 'ok' # workers
   workers.map(&:join); 'ok'
 
-  puts JSON.pretty_generate(Array.new(queue.size) { queue.pop })
+  puts JSON.dump(Array.new(output_q.size) { output_q.pop })
 end
 
 def check_single_uri(opts)
