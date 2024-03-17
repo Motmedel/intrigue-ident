@@ -476,6 +476,7 @@ module Intrigue
         ### the most common protocol, and we don't want to miss something simple
         ###
         if ident_matches
+          ident_matches['url'] = url
           return ident_matches # return right away if we a FP
         else
 
