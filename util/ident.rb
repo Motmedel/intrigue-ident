@@ -171,7 +171,7 @@ def check_uris_from_file(opts)
 
           print_debug "#{thread_name} #{x} gave result: #{out}"
 
-          output_q << out
+          output_q << check_result
         end
       rescue StandardError => e
         print_debug "Caught Exception! #{e}"
