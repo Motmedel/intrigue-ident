@@ -126,7 +126,12 @@ def check_uris_from_file(opts)
   output_q = Queue.new
 
   print_debug "Parsing file #{filepath}"
-  File.open(filepath, 'r').each_line { |x| work_q << x.chomp }
+
+  if filepath == "-"
+    $stdin.each_line { |line| work_q << line.chomp }
+  else
+    File.open(filepath, 'r').each_line { |line| work_q << line.chomp }
+  end
 
   # create a new ident obj
   ident_obj = Intrigue::Ident::Ident.new
