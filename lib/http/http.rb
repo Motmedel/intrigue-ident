@@ -352,24 +352,24 @@ module Intrigue
 
             content[:redirect_count] += 1
 
-            new_url = get_redirect_location_from_header(response.options[:effective_url],
-                                                        response.options[:response_headers])
-
-            if !new_url.nil? && !new_url.empty? && new_url != request.base_url
-
-              content[:redirect_chain].append(
-                {
-                  from: request.base_url,
-                  to: new_url
-                }
-              )
-
-              new_request = Typhoeus::Request.new(new_url, request.original_options)
-
-              puts "-- #{content[:redirect_count]} bounce - Redirected to: #{new_url}" if debug
-
-              build_hydra_request(hydra, new_request, content, debug)
-            end
+            # new_url = get_redirect_location_from_header(response.options[:effective_url],
+            #                                             response.options[:response_headers])
+            #
+            # if !new_url.nil? && !new_url.empty? && new_url != request.base_url
+            #
+            #   content[:redirect_chain].append(
+            #     {
+            #       from: request.base_url,
+            #       to: new_url
+            #     }
+            #   )
+            #
+            #   new_request = Typhoeus::Request.new(new_url, request.original_options)
+            #
+            #   puts "-- #{content[:redirect_count]} bounce - Redirected to: #{new_url}" if debug
+            #
+            #   build_hydra_request(hydra, new_request, content, debug)
+            # end
           end
         end
         content
